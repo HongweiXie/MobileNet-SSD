@@ -1,15 +1,17 @@
 import numpy as np  
 import sys,os  
 import cv2
-caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
-sys.path.insert(0, caffe_root + 'python')
+import glob
+from pascal_voc_io import PascalVocWriter
+#caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
+#sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-net_file= 'deploy.prototxt'  
-caffe_model='MobileNetSSD_deploy.caffemodel'
-#caffe_model='mobilenet_iter_73000.caffemodel'
-test_dir = "images"
+net_file= 'deploy/MobileNetSSD_deploy.prototxt'
+caffe_model='deploy/MobileNetSSD_deploy.caffemodel'
+test_dir = "/home/sixd-ailabs/Develop/Human/dataset/baidu/testset_dianjin_2"
+save_dir="/home/sixd-ailabs/Develop/Human/dataset/baidu/testret_dianjin_2"
 
 if not os.path.exists(caffe_model):
     print("MobileNetSSD_deploy.caffemodel does not exist,")
@@ -18,11 +20,7 @@ if not os.path.exists(caffe_model):
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair',
-           'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant',
-           'sheep', 'sofa', 'train', 'tvmonitor')
+           'hi_pose','person')
 
 
 def preprocess(src):
@@ -51,20 +49,29 @@ def detect(imgfile):
     out = net.forward()  
     box, conf, cls = postprocess(origimg, out)
 
+    image_name=os.path.basename(imgfile)
+    xml_name=image_name[:-4]+".xml"
+    writer = PascalVocWriter('test', image_name, imgSize=img.shape,
+                             localImgPath=os.path.join(save_dir, image_name))
     for i in range(len(box)):
        p1 = (box[i][0], box[i][1])
        p2 = (box[i][2], box[i][3])
-       cv2.rectangle(origimg, p1, p2, (0,255,0))
        p3 = (max(p1[0], 15), max(p1[1], 15))
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
+       if(conf[i]>=0.6):
+        cv2.rectangle(origimg, p1, p2, (0, 255, 0))
+        cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
+        writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False);
+
+    writer.save(os.path.join(save_dir,xml_name))
     cv2.imshow("SSD", origimg)
+    cv2.imwrite(os.path.join(save_dir,image_name),origimg)
  
-    k = cv2.waitKey(0) & 0xff
+    k = cv2.waitKey(10) & 0xff
         #Exit if ESC pressed
     if k == 27 : return False
     return True
 
-for f in os.listdir(test_dir):
-    if detect(test_dir + "/" + f) == False:
+for f in glob.glob(test_dir + '/*.jpg'):
+    if detect(f) == False:
        break

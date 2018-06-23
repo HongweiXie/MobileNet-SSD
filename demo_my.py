@@ -1,14 +1,13 @@
 import numpy as np  
 import sys,os  
 import cv2
-caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
-sys.path.insert(0, caffe_root + 'python')
+#caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
+#sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-net_file= 'deploy.prototxt'  
-caffe_model='MobileNetSSD_deploy.caffemodel'
-#caffe_model='mobilenet_iter_73000.caffemodel'
+net_file= 'example/MobileNetSSD_deploy.prototxt'
+caffe_model='snapshot_hi_pose/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"
 
 if not os.path.exists(caffe_model):
@@ -18,11 +17,7 @@ if not os.path.exists(caffe_model):
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair',
-           'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant',
-           'sheep', 'sofa', 'train', 'tvmonitor')
+           'hi_pose','person')
 
 
 def preprocess(src):
@@ -54,10 +49,11 @@ def detect(imgfile):
     for i in range(len(box)):
        p1 = (box[i][0], box[i][1])
        p2 = (box[i][2], box[i][3])
-       cv2.rectangle(origimg, p1, p2, (0,255,0))
        p3 = (max(p1[0], 15), max(p1[1], 15))
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
+       if(conf[i]>0.5):
+        cv2.rectangle(origimg, p1, p2, (0, 255, 0))
+        cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
     cv2.imshow("SSD", origimg)
  
     k = cv2.waitKey(0) & 0xff

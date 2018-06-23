@@ -1,14 +1,13 @@
 import numpy as np  
 import sys,os  
 import cv2
-caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
-sys.path.insert(0, caffe_root + 'python')
+#caffe_root = '/home/sixd-ailabs/Develop/Human/caffe'
+#sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-net_file= 'deploy.prototxt'  
-caffe_model='MobileNetSSD_deploy.caffemodel'
-#caffe_model='mobilenet_iter_73000.caffemodel'
+net_file= 'example/MobileNetSSD_deploy.prototxt'
+caffe_model='deploy/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"
 
 if not os.path.exists(caffe_model):
@@ -18,12 +17,10 @@ if not os.path.exists(caffe_model):
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair',
-           'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant',
-           'sheep', 'sofa', 'train', 'tvmonitor')
+           'hi_pose','person')
 
+COLORS =((128,128,128),(0,255,0),(0,255,255))
+cap = cv2.VideoCapture(0)
 
 def preprocess(src):
     img = cv2.resize(src, (300,300))
@@ -40,8 +37,8 @@ def postprocess(img, out):
     conf = out['detection_out'][0,0,:,2]
     return (box.astype(np.int32), conf, cls)
 
-def detect(imgfile):
-    origimg = cv2.imread(imgfile)
+def detect():
+    ret,origimg = cap.read()
     img = preprocess(origimg)
     
     img = img.astype(np.float32)
@@ -54,17 +51,18 @@ def detect(imgfile):
     for i in range(len(box)):
        p1 = (box[i][0], box[i][1])
        p2 = (box[i][2], box[i][3])
-       cv2.rectangle(origimg, p1, p2, (0,255,0))
-       p3 = (max(p1[0], 15), max(p1[1], 15))
+       p3 = (max(p1[0], 15), max(p1[1], 15)-7)
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
+       if(conf[i]>0.5):
+        cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])],5)
+        cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
     cv2.imshow("SSD", origimg)
  
-    k = cv2.waitKey(0) & 0xff
+    k = cv2.waitKey(1) & 0xff
         #Exit if ESC pressed
     if k == 27 : return False
     return True
 
-for f in os.listdir(test_dir):
-    if detect(test_dir + "/" + f) == False:
+while True:
+    if detect() == False:
        break
