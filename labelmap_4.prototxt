@@ -6,17 +6,16 @@ item {
 item {
   name: "point_r"
   label: 1
-  display_name: "point_r"
+  display_name: "point"
 }
 item {
   name: "point_l"
   label: 2
-  display_name: "point_l"
+  display_name: "point"
 }
 item {
   name: "other"
   label: 3
   display_name: "other"
 }
-
 

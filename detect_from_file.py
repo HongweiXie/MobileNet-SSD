@@ -3,6 +3,7 @@ import sys,os
 import cv2
 import glob
 from pascal_voc_io import PascalVocWriter
+from shutil import copyfile
 caffe_root = '/home/sixd-ailabs/Develop/Human/Caffe/caffe/'
 sys.path.insert(0, caffe_root + 'python')
 import caffe  
@@ -10,11 +11,18 @@ import caffe
 
 net_file= 'example/MobileNetSSD_deploy.prototxt'
 caffe_model='deploy/MobileNetSSD_deploy.caffemodel'
-test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/chengren_17_lr"
-save_dir="/home/sixd-ailabs/Develop/Human/Hand/diandu/test/eval_chengren_17_lr"
+test_dir = "/home/sixd-ailabs/Develop/Human/Hand/egohands_data/output/trainval"
+save_dir="/home/sixd-ailabs/Develop/Human/Hand/diandu/test/egohands"
 
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
+
+candidate_dir=os.path.join(save_dir,'candidates')
+safe_dir=os.path.join(save_dir,'safe')
+if not os.path.exists(candidate_dir):
+    os.mkdir(candidate_dir)
+if not os.path.exists(safe_dir):
+    os.mkdir(safe_dir)
 
 if not os.path.exists(caffe_model):
     print("MobileNetSSD_deploy.caffemodel does not exist,")
@@ -57,19 +65,32 @@ def detect(imgfile):
     xml_name=image_name[:-4]+".xml"
     writer = PascalVocWriter('test', image_name, imgSize=origimg.shape,
                              localImgPath=os.path.join(save_dir, image_name))
+    is_candidate=False
     for i in range(len(box)):
        p1 = (box[i][0], box[i][1])
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15))
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       if(conf[i]>=0.3):
+       if(conf[i]>=0.1):
         cv2.rectangle(origimg, p1, p2, (0, 255, 0))
         cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
-        writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False);
+        writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False)
+        if(int(cls[i])<=2):
+            is_candidate=True
 
-    writer.save(os.path.join(save_dir,xml_name))
+
     cv2.imshow("SSD", origimg)
-    cv2.imwrite(os.path.join(save_dir,image_name),origimg)
+    img_name=os.path.basename(imgfile)
+    if is_candidate:
+        # writer.save(os.path.join(candidate_dir, xml_name))
+        copyfile(os.path.join(test_dir,xml_name),os.path.join(candidate_dir,xml_name))
+        copyfile(imgfile,os.path.join(candidate_dir,img_name))
+    else:
+        # writer.save(os.path.join(safe_dir,xml_name))
+        copyfile(os.path.join(test_dir,xml_name),os.path.join(safe_dir,xml_name))
+        copyfile(imgfile,os.path.join(safe_dir,img_name))
+
+    # cv2.imwrite(os.path.join(save_dir,image_name),origimg)
  
     k = cv2.waitKey(1) & 0xff
         #Exit if ESC pressed

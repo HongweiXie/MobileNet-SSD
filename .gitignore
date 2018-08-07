@@ -1,2 +1,8 @@
 deploy/
 snapshot*/
+example/point/
+output/
+trainval_lmdb
+test_lmdb
+.idea/
+
