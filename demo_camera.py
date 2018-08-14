@@ -17,9 +17,9 @@ def convert2dlibbbox(bbox):
     right=cx+w*0.5
     bottom=cy+h*0.5
     return dlib.rectangle(int(left),int(top),int(right),int(bottom))
-
-net_file= 'example/MobileNetSSD_deploy.prototxt'
-caffe_model='deploy/MobileNetSSD_deploy.caffemodel'
+snapshot_dir='snapshot_point_5'
+net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
+caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"
 predictor_path='/home/sixd-ailabs/Develop/Human/Hand/Code/build-Hand-Landmarks-Detector-Desktop_Qt_5_10_0_GCC_64bit-Default/Hand_5_Landmarks_Detector.dat'
 predictor = dlib.shape_predictor(predictor_path)

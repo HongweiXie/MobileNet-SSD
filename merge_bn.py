@@ -4,11 +4,13 @@ caffe_root = '/home/sixd-ailabs/Develop/Human/Caffe/caffe/'
 sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
-train_proto = 'example/MobileNetSSD_train.prototxt'
-train_model = 'snapshot_point_4/mobilenet_iter_4250.caffemodel'  #should be your snapshot caffemodel
+snapshot_dir='snapshot_point_5'
 
-deploy_proto = 'example/MobileNetSSD_deploy.prototxt'
-save_model = 'deploy/MobileNetSSD_deploy.caffemodel'
+train_proto = snapshot_dir+'/MobileNetSSD_train.prototxt'
+train_model = snapshot_dir+'/mobilenet_iter_25071.caffemodel'  #should be your snapshot caffemodel
+
+deploy_proto = snapshot_dir+'/MobileNetSSD_deploy.prototxt'
+save_model = snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 
 def merge_bn(net, nob):
     '''
