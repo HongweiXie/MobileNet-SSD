@@ -1,16 +1,18 @@
-import numpy as np  
-import sys,os  
+import numpy as np
+import sys, os
+
 caffe_root = '/home/sixd-ailabs/Develop/Human/Caffe/caffe/'
 sys.path.insert(0, caffe_root + 'python')
-import caffe  
+import caffe
 
-snapshot_dir='snapshot_point_5'
+snapshot_dir = 'snapshot_point_7'
 
-train_proto = snapshot_dir+'/MobileNetSSD_train.prototxt'
-train_model = snapshot_dir+'/mobilenet_iter_25071.caffemodel'  #should be your snapshot caffemodel
+train_proto = snapshot_dir + '/MobileNetSSD_train.prototxt'
+train_model = snapshot_dir + '/mobilenet_iter_6300.caffemodel'  # should be your snapshot caffemodel
 
-deploy_proto = snapshot_dir+'/MobileNetSSD_deploy.prototxt'
-save_model = snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
+deploy_proto = snapshot_dir + '/MobileNetSSD_deploy.prototxt'
+save_model = snapshot_dir + '/MobileNetSSD_deploy.caffemodel'
+
 
 def merge_bn(net, nob):
     '''
@@ -23,7 +25,7 @@ def merge_bn(net, nob):
     for key in net.params.iterkeys():
         if type(net.params[key]) is caffe._caffe.BlobVec:
             if key.endswith("/bn") or key.endswith("/scale"):
-		continue
+                continue
             else:
                 conv = net.params[key]
                 if not net.params.has_key(key + "/bn"):
@@ -49,18 +51,17 @@ def merge_bn(net, nob):
                     mean = mean * scalef
                     var = var * scalef
                     rstd = 1. / np.sqrt(var + 1e-5)
-                    rstd1 = rstd.reshape((channels,1,1,1))
-                    scales1 = scales.reshape((channels,1,1,1))
+                    rstd1 = rstd.reshape((channels, 1, 1, 1))
+                    scales1 = scales.reshape((channels, 1, 1, 1))
                     wt = wt * rstd1 * scales1
                     bias = (bias - mean) * rstd * scales + shift
-                    
+
                     nob.params[key][0].data[...] = wt
                     nob.params[key][1].data[...] = bias
-  
 
-net = caffe.Net(train_proto, train_model, caffe.TRAIN)  
-net_deploy = caffe.Net(deploy_proto, caffe.TEST)  
+
+net = caffe.Net(train_proto, train_model, caffe.TRAIN)
+net_deploy = caffe.Net(deploy_proto, caffe.TEST)
 
 merge_bn(net, net_deploy)
 net_deploy.save(save_model)
-

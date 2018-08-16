@@ -17,7 +17,7 @@ def convert2dlibbbox(bbox):
     right=cx+w*0.5
     bottom=cy+h*0.5
     return dlib.rectangle(int(left),int(top),int(right),int(bottom))
-snapshot_dir='snapshot_point_5'
+snapshot_dir='snapshot_point_7'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"
@@ -75,7 +75,7 @@ def detect(video):
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15)-7)
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       if(conf[i]>0.3 ):
+       if(conf[i]>0.5 ):
            cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 5)
            cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
         # shape = predictor(origimg, convert2dlibbbox(box[i]))
