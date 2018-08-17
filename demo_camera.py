@@ -17,7 +17,7 @@ def convert2dlibbbox(bbox):
     right=cx+w*0.5
     bottom=cy+h*0.5
     return dlib.rectangle(int(left),int(top),int(right),int(bottom))
-snapshot_dir='snapshot_point_7'
+snapshot_dir='snapshot_point_8'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"

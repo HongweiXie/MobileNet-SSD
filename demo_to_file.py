@@ -8,7 +8,7 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-snapshot_dir='snapshot_point_7'
+snapshot_dir='snapshot_point_9'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/chengren_17_lr"
