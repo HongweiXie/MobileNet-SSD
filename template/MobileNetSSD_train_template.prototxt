@@ -28,9 +28,9 @@ layer {
       emit_type: CENTER
     }
     distort_param {
-      brightness_prob: 0.5
+      brightness_prob: 0.2
       brightness_delta: 32.0
-      contrast_prob: 0.5
+      contrast_prob: 0.2
       contrast_lower: 0.5
       contrast_upper: 1.5
       hue_prob: 0.5
