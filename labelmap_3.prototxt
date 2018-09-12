@@ -1,0 +1,19 @@
+item {
+  name: "none_of_the_above"
+  label: 0
+  display_name: "background"
+}
+
+item {
+  name: "point_r"
+  label: 1
+  display_name: "point"
+}
+
+item {
+  name: "other"
+  label: 2
+  display_name: "other"
+}
+
+

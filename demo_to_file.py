@@ -8,7 +8,7 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-snapshot_dir='snapshot_point_9'
+snapshot_dir='diandu/snapshot_point_14'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/chengren_17_lr"
@@ -25,7 +25,7 @@ caffe.set_mode_gpu()
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'point_r','point_l','other')
+           'index','other','other')
 
 
 def preprocess(src):
@@ -63,7 +63,9 @@ def detect(imgfile):
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15))
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       if(conf[i]>=0.3):
+       if (int(cls[i])==1 and conf[i]>=0.3) \
+               or (int(cls[i]==2) and conf[i]>=0.3) \
+               or (int(cls[i]==3) and conf[i]>=0.3):
         cv2.rectangle(origimg, p1, p2, (0, 255, 0))
         cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
         writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False);
