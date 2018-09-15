@@ -5,10 +5,10 @@ caffe_root = '/home/sixd-ailabs/Develop/Human/Caffe/caffe/'
 sys.path.insert(0, caffe_root + 'python')
 import caffe
 
-snapshot_dir = 'diandu/snapshot_point_14'
+snapshot_dir = 'diandu/snapshot_point_15'
 
 train_proto = snapshot_dir + '/MobileNetSSD_train.prototxt'
-train_model = snapshot_dir + '/mobilenet_iter_19634.caffemodel'  # should be your snapshot caffemodel
+train_model = snapshot_dir + '/mobilenet_iter_45055.caffemodel'  # should be your snapshot caffemodel
 
 deploy_proto = snapshot_dir + '/MobileNetSSD_deploy.prototxt'
 save_model = snapshot_dir + '/MobileNetSSD_deploy.caffemodel'
