@@ -17,7 +17,7 @@ def convert2dlibbbox(bbox):
     right=cx+w*0.5
     bottom=cy+h*0.5
     return dlib.rectangle(int(left),int(top),int(right),int(bottom))
-snapshot_dir='diandu/snapshot_point_13'
+snapshot_dir='diandu/snapshot_point_16_server'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
 test_dir = "images"
@@ -32,7 +32,7 @@ if not os.path.exists(caffe_model):
 net = caffe.Net(net_file,caffe_model,caffe.TEST)
 
 CLASSES = ('background',
-           'point_r','point_l','other')
+           'point','point_portrait','other')
 
 COLORS =((128,128,128),(0,255,0),(0,255,255),(0,0,255))
 cap = cv2.VideoCapture(1)
@@ -76,7 +76,7 @@ def detect(video):
        p3 = (max(p1[0], 15), max(p1[1], 15)-7)
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
        if (int(cls[i]) == 1 and conf[i] >= 0.3) \
-               or (int(cls[i] == 2) and conf[i] >= 0.7) \
+               or (int(cls[i] == 2) and conf[i] >= 0.3) \
                or (int(cls[i] == 3) and conf[i] >= 0.3):
            cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 5)
            cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
