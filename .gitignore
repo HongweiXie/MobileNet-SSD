@@ -5,4 +5,5 @@ output/
 trainval_lmdb
 test_lmdb
 .idea/
+diandu_*
 

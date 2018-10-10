@@ -8,10 +8,10 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-snapshot_dir='diandu/snapshot_point_16_server'
+snapshot_dir='diandu/snapshot_point_18'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
-test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/chengren_17_lr"
+test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/test/chengren_17"
 save_dir="/home/sixd-ailabs/Develop/Human/Hand/diandu/test/eval_chengren_17_lr"
 
 if not os.path.exists(save_dir):
@@ -25,8 +25,8 @@ caffe.set_mode_gpu()
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'index','other','other')
-
+           'index','index','other','other')
+COLORS =((128,128,128),(0,255,0),(0,255,255),(255,255,0),(0,0,255))
 
 def preprocess(src):
     img = cv2.resize(src, (300,300))
@@ -63,12 +63,10 @@ def detect(imgfile):
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15))
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       if (int(cls[i])==1 and conf[i]>=0.5) \
-               or (int(cls[i]==2) and conf[i]>=0.3) \
-               or (int(cls[i]==3) and conf[i]>=0.3):
-        cv2.rectangle(origimg, p1, p2, (0, 255, 0))
-        cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
-        writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False);
+       if (conf[i]>=0.3):
+        cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 3)
+        cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 1)
+        writer.addBndBox(box[i][0],box[i][1],box[i][2],box[i][3],CLASSES[(int)(cls[i])],False,confidence=conf[i]);
 
     writer.save(os.path.join(save_dir,xml_name))
     cv2.imshow("SSD", origimg)
@@ -78,7 +76,8 @@ def detect(imgfile):
         #Exit if ESC pressed
     if k == 27 : return False
     return True
-
-for f in glob.glob(test_dir + '/*.jpg'):
+import tqdm
+jpg_list=glob.glob(test_dir + '/*.jpg')
+for f in tqdm.tqdm(jpg_list):
     if detect(f) == False:
        break

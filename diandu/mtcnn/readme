@@ -1,0 +1,15 @@
+mtcnn结果 （test可能已经在训练集之中了）
+index:
+IoU Thresholds: 0.5,		 Precison: 0.942537313433,		 Recall: 0.907327586207
+IoU Thresholds: 0.55,		 Precison: 0.909701492537,		 Recall: 0.875718390805
+IoU Thresholds: 0.6,		 Precison: 0.818656716418,		 Recall: 0.788074712644
+IoU Thresholds: 0.65,		 Precison: 0.615671641791,		 Recall: 0.592672413793
+IoU Thresholds: 0.7,		 Precison: 0.394776119403,		 Recall: 0.380028735632
+IoU Thresholds: 0.75,		 Precison: 0.185074626866,		 Recall: 0.17816091954
+IoU Thresholds: 0.8,		 Precison: 0.0641791044776,		 Recall: 0.0617816091954
+IoU Thresholds: 0.85,		 Precison: 0.0171641791045,		 Recall: 0.0165229885057
+IoU Thresholds: 0.9,		 Precison: 0.00298507462687,		 Recall: 0.00287356321839
+IoU Thresholds: 0.95,		 Precison: 0.0,		 Recall: 0.0
+mAP=0.395074626866 mRecall=0.380316091954
+
+框的准确性低
