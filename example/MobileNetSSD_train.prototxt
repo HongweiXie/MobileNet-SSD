@@ -9,7 +9,7 @@ layer {
   }
   transform_param {
     scale: 0.007843
-    mirror: false
+    mirror: true
     mean_value: 127.5
     mean_value: 127.5
     mean_value: 127.5
@@ -153,7 +153,7 @@ layer {
       max_sample: 1
       max_trials: 50
     }
-    label_map_file: "labelmap_4_portrait.prototxt"
+    label_map_file: "labelmap_5.prototxt"
   }
 }
 layer {
@@ -1772,7 +1772,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 12
+    num_output: 15
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1883,7 +1883,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 16
+    num_output: 20
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1995,7 +1995,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 16
+    num_output: 20
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -2103,7 +2103,7 @@ layer {
     loc_loss_type: SMOOTH_L1
     conf_loss_type: SOFTMAX
     loc_weight: 1.0
-    num_classes: 4
+    num_classes: 5
     share_location: true
     match_type: PER_PREDICTION
     overlap_threshold: 0.5

@@ -1,0 +1,26 @@
+item {
+  name: "none_of_the_above"
+  label: 0
+  display_name: "background"
+}
+item {
+  name: "point"
+  label: 1
+  display_name: "point"
+}
+item {
+  name: "point_portrait"
+  label: 2
+  display_name: "point"
+}
+item {
+  name: "point_flip_up_down"
+  label: 3
+  display_name: "point_flip_up_down"
+}
+item {
+  name: "other"
+  label: 4
+  display_name: "other"
+}
+
