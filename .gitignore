@@ -8,3 +8,5 @@ test_lmdb
 core.*
 diandu/
 log
+diandu_*
+

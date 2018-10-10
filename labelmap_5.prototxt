@@ -11,7 +11,7 @@ item {
 item {
   name: "point_portrait"
   label: 2
-  display_name: "point"
+  display_name: "point_portrait"
 }
 item {
   name: "point_flip_up_down"

@@ -15,7 +15,7 @@ cls_num3=$(expr $1 \* 3)
 cls_num6=$(expr $1 \* 6)
 cls_num4=$(expr $1 \* 4)
 
-layer_num_1x=24
+layer_num_1x=16
 layer_num_2x=$(expr ${layer_num_1x} \* 2)
 layer_num_4x=$(expr ${layer_num_1x} \* 4)
 layer_num_8x=$(expr ${layer_num_1x} \* 8)
