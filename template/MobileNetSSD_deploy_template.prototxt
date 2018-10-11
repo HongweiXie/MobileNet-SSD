@@ -675,7 +675,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: layer_num_16x
+    num_output: layer_num_32x
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -706,10 +706,10 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: layer_num_16x
+    num_output: layer_num_32x
     pad: 1
     kernel_size: 3
-    group: layer_num_16x
+    group: layer_num_32x
     engine: CAFFE
     weight_filler {
       type: "msra"
@@ -740,7 +740,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: layer_num_16x
+    num_output: layer_num_32x
     kernel_size: 1
     weight_filler {
       type: "msra"
