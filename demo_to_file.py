@@ -8,11 +8,11 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-snapshot_dir='diandu/snapshot_point_18'
+snapshot_dir='diandu_2/snapshot_point_001'
 net_file= snapshot_dir+'/MobileNetSSD_deploy.prototxt'
 caffe_model=snapshot_dir+'/MobileNetSSD_deploy.caffemodel'
-test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/test/chengren_17"
-save_dir="/home/sixd-ailabs/Develop/Human/Hand/diandu/test/eval_chengren_17_lr"
+test_dir = "/home/sixd-ailabs/Develop/Human/Hand/diandu/test/taideng/test"
+save_dir="/home/sixd-ailabs/Develop/Human/Hand/diandu/test/eval_taideng"
 
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
@@ -25,7 +25,7 @@ caffe.set_mode_gpu()
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'index','index','other','other')
+           'index','other','other','other')
 COLORS =((128,128,128),(0,255,0),(0,255,255),(255,255,0),(0,0,255))
 
 def preprocess(src):

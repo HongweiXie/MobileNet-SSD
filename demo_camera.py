@@ -75,9 +75,7 @@ def detect(video):
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15)-7)
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-       if (int(cls[i]) == 1 and conf[i] >= 0.45) \
-               or (int(cls[i] == 2) and conf[i] >= 0.45) \
-               or (int(cls[i] == 3) and conf[i] >= 0.45):
+       if (conf[i] >= 0.3):
            cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 5)
            cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
         # shape = predictor(origimg, convert2dlibbbox(box[i]))

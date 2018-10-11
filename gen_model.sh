@@ -11,6 +11,7 @@ if [ $? != 0 ];then
 	exit 1
 fi
 cls_num=$1
+cls_num2=$(expr $1 \* 2)
 cls_num3=$(expr $1 \* 3)
 cls_num6=$(expr $1 \* 6)
 cls_num4=$(expr $1 \* 4)
@@ -32,6 +33,7 @@ mkdir -p example
 cp template/MobileNetSSD_train_template.prototxt $trainfile
 sed -i "s/cls6x/${cls_num6}/g" $trainfile
 sed -i "s/cls3x/${cls_num3}/g" $trainfile
+sed -i "s/cls2x/${cls_num2}/g" $trainfile
 sed -i "s/cls1x/${cls_num}/g" $trainfile
 sed -i "s/cls4x/${cls_num4}/g" $trainfile
 sed -i "s/layer_num_1x/${layer_num_1x}/g" $trainfile
@@ -45,6 +47,7 @@ cp template/MobileNetSSD_test_template.prototxt $testfile
 sed -i "s/cls6x/${cls_num6}/g" $testfile
 sed -i "s/cls3x/${cls_num3}/g" $testfile
 sed -i "s/cls1x/${cls_num}/g" $testfile
+sed -i "s/cls2x/${cls_num2}/g" $testfile
 sed -i "s/cls4x/${cls_num4}/g" $testfile
 sed -i "s/layer_num_1x/${layer_num_1x}/g" $testfile
 sed -i "s/layer_num_2x/${layer_num_2x}/g" $testfile
@@ -62,6 +65,7 @@ cp template/MobileNetSSD_deploy_template.prototxt $deployfile
 sed -i "s/cls6x/${cls_num6}/g" $deployfile
 sed -i "s/cls3x/${cls_num3}/g" $deployfile
 sed -i "s/cls1x/${cls_num}/g" $deployfile
+sed -i "s/cls2x/${cls_num2}/g" $deployfile
 sed -i "s/cls4x/${cls_num4}/g" $deployfile
 sed -i "s/layer_num_1x/${layer_num_1x}/g" $deployfile
 sed -i "s/layer_num_2x/${layer_num_2x}/g" $deployfile

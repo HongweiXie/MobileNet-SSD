@@ -153,7 +153,7 @@ layer {
       max_sample: 1
       max_trials: 50
     }
-    label_map_file: "labelmap_5.prototxt"
+    label_map_file: "labelmap_4.prototxt"
   }
 }
 layer {
@@ -1700,17 +1700,6 @@ layer {
     stride: 2
   }
 }
-layer {
-  name: "pool2"
-  type: "Pooling"
-  bottom: "pool1"
-  top: "pool2"
-  pooling_param {
-    pool: MAX
-    kernel_size: 3
-    stride: 2
-  }
-}
 
 layer {
   name: "conv11_mbox_loc"
@@ -1726,7 +1715,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 12
+    num_output: 8
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1772,7 +1761,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 15
+    num_output: 8
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1812,7 +1801,6 @@ layer {
   top: "conv11_mbox_priorbox"
   prior_box_param {
     min_size: 60.0
-    aspect_ratio: 0.5
     aspect_ratio: 0.3333
     flip: false
     clip: false
@@ -1883,7 +1871,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 20
+    num_output: 16
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1935,125 +1923,13 @@ layer {
     offset: 0.5
   }
 }
-layer {
-  name: "pool2_mbox_loc"
-  type: "Convolution"
-  bottom: "pool2"
-  top: "pool2_mbox_loc"
-  param {
-    lr_mult: 0.1
-    decay_mult: 0.1
-  }
-  param {
-    lr_mult: 0.2
-    decay_mult: 0.0
-  }
-  convolution_param {
-    num_output: 16
-    kernel_size: 1
-    weight_filler {
-      type: "msra"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-    }
-  }
-}
-layer {
-  name: "pool2_mbox_loc_perm"
-  type: "Permute"
-  bottom: "pool2_mbox_loc"
-  top: "pool2_mbox_loc_perm"
-  permute_param {
-    order: 0
-    order: 2
-    order: 3
-    order: 1
-  }
-}
-layer {
-  name: "pool2_mbox_loc_flat"
-  type: "Flatten"
-  bottom: "pool2_mbox_loc_perm"
-  top: "pool2_mbox_loc_flat"
-  flatten_param {
-    axis: 1
-  }
-}
-layer {
-  name: "pool2_mbox_conf_new"
-  type: "Convolution"
-  bottom: "pool2"
-  top: "pool2_mbox_conf"
-  param {
-    lr_mult: 1.0
-    decay_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-    decay_mult: 0.0
-  }
-  convolution_param {
-    num_output: 20
-    kernel_size: 1
-    weight_filler {
-      type: "msra"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0.0
-    }
-  }
-}
-layer {
-  name: "pool2_mbox_conf_perm"
-  type: "Permute"
-  bottom: "pool2_mbox_conf"
-  top: "pool2_mbox_conf_perm"
-  permute_param {
-    order: 0
-    order: 2
-    order: 3
-    order: 1
-  }
-}
-layer {
-  name: "pool2_mbox_conf_flat"
-  type: "Flatten"
-  bottom: "pool2_mbox_conf_perm"
-  top: "pool2_mbox_conf_flat"
-  flatten_param {
-    axis: 1
-  }
-}
-layer {
-  name: "pool2_mbox_priorbox"
-  type: "PriorBox"
-  bottom: "pool2"
-  bottom: "data"
-  top: "pool2_mbox_priorbox"
-  prior_box_param {
-    min_size: 150.0
-    max_size: 195.0
-    aspect_ratio: 0.5
-    aspect_ratio: 0.3333
-    flip: false
-    clip: false
-    variance: 0.1
-    variance: 0.1
-    variance: 0.2
-    variance: 0.2
-    offset: 0.5
-  }
-}
+
 
 layer {
   name: "mbox_loc"
   type: "Concat"
   bottom: "conv11_mbox_loc_flat"
   bottom: "pool1_mbox_loc_flat"
-  bottom: "pool2_mbox_loc_flat"
   top: "mbox_loc"
   concat_param {
     axis: 1
@@ -2064,7 +1940,6 @@ layer {
   type: "Concat"
   bottom: "conv11_mbox_conf_flat"
   bottom: "pool1_mbox_conf_flat"
-  bottom: "pool2_mbox_conf_flat"
   top: "mbox_conf"
   concat_param {
     axis: 1
@@ -2075,7 +1950,6 @@ layer {
   type: "Concat"
   bottom: "conv11_mbox_priorbox"
   bottom: "pool1_mbox_priorbox"
-  bottom: "pool2_mbox_priorbox"
   top: "mbox_priorbox"
   concat_param {
     axis: 2
@@ -2103,7 +1977,7 @@ layer {
     loc_loss_type: SMOOTH_L1
     conf_loss_type: SOFTMAX
     loc_weight: 1.0
-    num_classes: 5
+    num_classes: 4
     share_location: true
     match_type: PER_PREDICTION
     overlap_threshold: 0.5
