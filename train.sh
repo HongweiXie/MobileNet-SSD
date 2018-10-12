@@ -6,7 +6,7 @@ if ! test -f example/MobileNetSSD_train.prototxt ;then
 fi
 export PYTHONPATH=/home/sixd-ailabs/Develop/Human/Caffe/caffe/python
 #"mobilenet_iter_73000.caffemodel"
-snapshot_dir=diandu_2/snapshot_point_002
+snapshot_dir=diandu_2/snapshot_point_003
 mkdir -p ${snapshot_dir}
 latest=$(ls -t ${snapshot_dir}/*.caffemodel | head -n 1)
 echo $latest

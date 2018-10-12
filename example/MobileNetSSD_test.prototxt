@@ -1590,7 +1590,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 8
+    num_output: 12
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1636,7 +1636,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 8
+    num_output: 15
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1676,6 +1676,7 @@ layer {
   top: "conv11_mbox_priorbox"
   prior_box_param {
     min_size: 60.0
+    aspect_ratio: 0.5
     aspect_ratio: 0.3333
     flip: false
     clip: false
@@ -1746,7 +1747,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 16
+    num_output: 20
     kernel_size: 1
     weight_filler {
       type: "msra"
@@ -1839,7 +1840,7 @@ layer {
     shape {
       dim: 0
       dim: -1
-      dim: 4
+      dim: 5
     }
   }
 }
@@ -1872,7 +1873,7 @@ layer {
     phase: TEST
   }
   detection_output_param {
-    num_classes: 4
+    num_classes: 5
     share_location: true
     background_label_id: 0
     nms_param {
@@ -1894,7 +1895,7 @@ layer {
     phase: TEST
   }
   detection_evaluate_param {
-    num_classes: 4
+    num_classes: 5
     background_label_id: 0
     overlap_threshold: 0.5
     evaluate_difficult_gt: false
