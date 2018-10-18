@@ -6,14 +6,27 @@ if ! test -f example/MobileNetSSD_train.prototxt ;then
 fi
 export PYTHONPATH=../caffe/python
 #"mobilenet_iter_73000.caffemodel"
-snapshot_dir=diandu_2/snapshot_point_001
+snapshot_dir=diandu_2/snapshot_point_003
 mkdir -p ${snapshot_dir}
+#latest=$(ls -t ${snapshot_dir}/*.caffemodel | head -n 1)
+#echo $latest
+#../caffe/build/tools/caffe train -solver="solver_train.prototxt" \
+#-weights=$latest \
+#-gpu 0,1,2,3,4,5,6,7
+
 latest=$(ls -t ${snapshot_dir}/*.caffemodel | head -n 1)
 echo $latest
-../caffe/build/tools/caffe train -solver="solver_train.prototxt" \
+echo 'start batch_size=64'
+../caffe/build/tools/caffe train -solver="solver_train_64.prototxt" \
 -weights=$latest \
 -gpu 0,1,2,3,4,5,6,7
 
+latest=$(ls -t ${snapshot_dir}/*.caffemodel | head -n 1)
+echo $latest
+echo 'start batch_size=32'
+../caffe/build/tools/caffe train -solver="solver_train_32.prototxt" \
+-weights=$latest \
+-gpu 0,1,2,3,4,5,6,7
 
 
 
