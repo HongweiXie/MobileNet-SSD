@@ -5,7 +5,15 @@ caffe_root = '/home/sixd-ailabs/Develop/Human/Caffe/caffe/'
 sys.path.insert(0, caffe_root + 'python')
 import caffe  
 import dlib
-
+import math
+tf_pose_root='/home/sixd-ailabs/Develop/Human/TF/tf-pose-estimation'
+sys.path.insert(0, tf_pose_root)
+from tf_pose import common
+from tf_pose.diandu_estimator import TfDianduEstimator
+from tf_pose.networks import get_graph_path, model_wh
+KEYPOINT_COLORS=[(255,0,0),(0,255,0),(0,0,255),(0,255,255),(255,255,0)]
+tf_pose_input_size=128
+keypoints_estimator = TfDianduEstimator(get_graph_path('mobilenet_lite'), target_size=(tf_pose_input_size, tf_pose_input_size))
 
 def convert2dlibbbox(bbox):
     cx=(bbox[0]+bbox[2])/2
@@ -69,21 +77,64 @@ def detect(video):
     net.blobs['data'].data[...] = img
     out = net.forward()  
     box, conf, cls = postprocess(origimg, out)
-
+    h,w,_=origimg.shape
+    ladmarkImg = np.zeros(origimg.shape)
     for i in range(len(box)):
        p1 = (box[i][0], box[i][1])
        p2 = (box[i][2], box[i][3])
        p3 = (max(p1[0], 15), max(p1[1], 15)-7)
        title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
        if (conf[i] >= 0.3):
-           cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 5)
-           cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
-        # shape = predictor(origimg, convert2dlibbbox(box[i]))
+           if(cls[i]==1):
+               cx=(box[i][0]+box[i][2])/2
+               cy=(box[i][1]+box[i][3])/2
+               bw=box[i][2]-box[i][0]
+               bh=box[i][3]-box[i][1]
+               crop_size=min(max(bw,bh)*1.1,math.sqrt(bw*bw+bh*bh))
+               left=cx-crop_size/2
+               right=cx+crop_size/2
+               top=cy-crop_size/2
+               bottom=cy+crop_size/2
+               if left<0:
+                    left=0
+                    right=left+crop_size
+               if right>w:
+                    right=w
+                    left=right-crop_size
+               if top<0:
+                    top=0
+                    bottom=top+crop_size
+               if bottom>h:
+                   bottom=h
+                   top=bottom-crop_size
+
+               hand_img=origimg[int(top):int(bottom),int(left):int(right)]
+               # cv2.imshow('hand',hand_img)
+               scale=crop_size/tf_pose_input_size
+               hand = keypoints_estimator.inference(hand_img, resize_to_default=True, upsample_size=4.0)
+
+               hand_landmark_img = ladmarkImg[int(top):int(bottom), int(left):int(right)]
+               pre_point=None
+               for index, p in enumerate(hand):
+                   if (p[2] > 0.01):
+                       cv2.circle(hand_img, (int(p[0]*scale+0.5), int(p[1]*scale+0.5)), 3, KEYPOINT_COLORS[index], -1)
+                       cv2.circle(hand_landmark_img, (int(p[0] * scale + 0.5), int(p[1] * scale + 0.5)), 3,
+                                  KEYPOINT_COLORS[index], -1)
+                       if(index>0):
+                           cv2.line(hand_landmark_img,(int(p[0] * scale + 0.5), int(p[1] * scale + 0.5)),
+                                    (int(pre_point[0] * scale + 0.5), int(pre_point[1] * scale + 0.5)),(255,255,255),1)
+                   pre_point=p
+
+               cv2.rectangle(origimg, p1, p2, COLORS[int(cls[i])], 5)
+               cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, COLORS[int(cls[i])], 2)
+
+               # shape = predictor(origimg, convert2dlibbbox(box[i]))
         # for j in range(5):
         #     pt = shape.part(j)
         #     cv2.circle(origimg, (int(pt.x), int(pt.y)), 5, (55, 255, 155), 2)
 
     cv2.imshow("SSD", origimg)
+    cv2.imshow("landmark", ladmarkImg)
     video.write(origimg)
     k = cv2.waitKey(1) & 0xff
         #Exit if ESC pressed
