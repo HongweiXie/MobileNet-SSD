@@ -3,13 +3,13 @@ test_net: "example/MobileNetSSD_test.prototxt"
 test_iter: 673
 test_interval: 1000000
 base_lr: 0.004
-display: 10
+display: 100
 max_iter: 20000
 lr_policy: "multistep"
 gamma: 0.8
 weight_decay: 0.00001
 snapshot: 2000
-snapshot_prefix: "diandu_2/snapshot_point_003/mobilenet"
+snapshot_prefix: "diandu_2/snapshot_point_004/mobilenet"
 solver_mode: GPU
 debug_info: false
 snapshot_after_train: true
